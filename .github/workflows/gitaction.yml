@@ -11,32 +11,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-      - run: npm install
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+      - run: npm test
 
   security-check:
     runs-on: self-hosted
     needs: compile
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Trivy Installation
-      run: |
-        wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
-        sudo dpkg -i trivy_0.18.3_Linux-64bit.deb
+      - uses: actions/checkout@v4
 
+      - name: Trivy Installation
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
+          sudo dpkg -i trivy_0.18.3_Linux-64bit.deb
 
-    - name: Trivy FS Scan
-      run: trivy fs --format table -o fs-report.json .
-      
+      - name: Trivy FS Scan
+        run: trivy fs --format table -o fs-report.json .
+
   Docker_image_build:
-    needs: security-check
     runs-on: self-hosted
+    needs: security-check
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
