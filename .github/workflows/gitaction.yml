@@ -56,6 +56,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: sivan/app:latest
+          tags: sivabalan2510/app:latest
           file: ./Dockerfile
       
