@@ -36,7 +36,7 @@ jobs:
 
 
   Docker_image_build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: security-check
 
     steps:
@@ -58,4 +58,13 @@ jobs:
           push: true
           tags: sivabalan2510/app:latest
           file: ./Dockerfile
+
+  Trivy_scanning:
+        runs-on: self-hosted
+
+        steps:
+         - uses: actions/checkout@v4
+         - name: scaning the image
+           uses: trivy image sivabalan2510/app:latest > trivyimage.txt
+
       
