@@ -58,6 +58,17 @@ jobs:
           push: true
           tags: sivabalan2510/app:latest
           file: ./Dockerfile
-          
+  run-container:
+    runs-on: self-hosted
+    needs: Docker_image_build
+
+    steps:
+    - name: Stop and Remove Existing Container (if any)
+      run: |
+        docker rm -f swiggy-app || true
+
+    - name: Run Container
+      run: |
+        docker run -d --name swiggy-app -p 3000:3000 sivabalan2510/app:latest
 
       
